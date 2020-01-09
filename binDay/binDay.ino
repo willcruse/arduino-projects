@@ -2,10 +2,10 @@
 #include <ESP8266HTTPClient.h>
 #include <ArduinoJson.h>
 
-const int redPin = 20;
-const int greenPin = 19;
-const int yellowPin = 18;
-const int whitePin = 17;
+const int redPin = 4; //D2
+const int greenPin = 5; //D1
+const int yellowPin = 2; //D4
+const int whitePin = 15; //D3
 
 void setup() {
   Serial.begin(9600);
@@ -13,7 +13,8 @@ void setup() {
   pinMode(greenPin, OUTPUT);
   pinMode(yellowPin, OUTPUT);
   pinMode(whitePin, OUTPUT);
-  WiFi.begin("", "");
+  Serial.println("Connecting to WiFi");
+  WiFi.begin("Netgear78", "rusticcomet148");
   while(WiFi.status() != WL_CONNECTED) {
     digitalWrite(greenPin, LOW);
     digitalWrite(redPin, HIGH);
@@ -25,23 +26,32 @@ void setup() {
     digitalWrite(greenPin, HIGH);
     delay(50);
   }
+  Serial.println("Connected To WiFi");
   resetLEDS();
   digitalWrite(whitePin, HIGH);
 }
 
 void loop() {
-  resetLEDS();
-  char* url = "https://europe-west1-bindicator.cloudfunctions.net/getData";
+  char* url = "http://europe-west1-bindicator.cloudfunctions.net/getData";
   HTTPClient http;
-  http.begin(url);
+  bool a = http.begin(url);
+  Serial.println(a);
+//  while(!http.connected()) {
+//    digitalWrite(whitePin, LOW);
+//    delay(10);
+//    Serial.println("connecting");
+//    digitalWrite(whitePin, HIGH);
+//  }
+  digitalWrite(whitePin, LOW);
+  Serial.println("Getting from URL");
   int httpCode = http.GET();
   String payload = http.getString();
-  Serial.println(payload);
   http.end();
   StaticJsonDocument<200> doc;
   DeserializationError error = deserializeJson(doc, payload);
   if (error) {
     digitalWrite(redPin, HIGH);
+    Serial.print("Error: ");
     Serial.println(error.c_str());
     return;
   }
@@ -49,12 +59,16 @@ void loop() {
   String recDay = doc["rec"];
   if (binDay.equals("true")) {
     digitalWrite(yellowPin, HIGH);
+  } else {
+    digitalWrite(yellowPin, LOW);
   }
   if (recDay.equals("true")) {
     digitalWrite(greenPin, HIGH);
+  } else {
+    digitalWrite(greenPin, LOW);
   }
-//  delay(21600000);
-  delay(10);
+  delay(21600000);
+//  delay(100);
 }
 
 void resetLEDS() {

@@ -14,7 +14,7 @@ void setup() {
   pinMode(yellowPin, OUTPUT);
   pinMode(whitePin, OUTPUT);
   Serial.println("Connecting to WiFi");
-  WiFi.begin("Netgear78", "rusticcomet148");
+  WiFi.begin("REDACTED", "REDACTED");
   while(WiFi.status() != WL_CONNECTED) {
     digitalWrite(greenPin, LOW);
     digitalWrite(redPin, HIGH);
@@ -67,8 +67,8 @@ void loop() {
   } else {
     digitalWrite(greenPin, LOW);
   }
-  delay(21600000);
-//  delay(100);
+//  delay(21600000);
+  delay(1000000);
 }
 
 void resetLEDS() {

@@ -10,12 +10,12 @@ timeJSON = timeReq.json()
 binDay = binJSON.get("residualNextDate", "0000-01-01")[:10]
 recDay = binJSON.get("recyclingNextDate", "0000-01-01")[:10]
 currentDay = str(date.today())
-print(binDay[:10])
-print(recDay[:10])
-print(currentDay)
+
+
+
 
 ret = {
     "bin": binDay == currentDay,
     "rec": recDay == currentDay
 }
-print(str(ret))
+

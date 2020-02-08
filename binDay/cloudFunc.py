@@ -1,5 +1,6 @@
 import requests
-from datetime import date
+from datetime import date, timedelta,datetime
+import time
 import json
 
 def getData(request):
@@ -32,11 +33,14 @@ def getData(request):
 
     binDay = binJSON.get("residualNextDate", "0000-01-01")[:10]
     recDay = binJSON.get("recyclingNextDate", "0000-01-01")[:10]
-    currentDay = str(date.today())
+    thing = datetime.fromtimestamp(time.mktime(time.gmtime()))
+    thing += timedelta(hours=6)
+
+    currentDay = str(thing)[:10]
+
 
     ret = {
         "bin": binDay == currentDay,
         "rec": recDay == currentDay
     }
-    print(str(ret))
     return (json.dumps(ret), 200, headers)
